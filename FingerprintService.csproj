@@ -4,13 +4,24 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FirebaseAdmin" Version="3.3.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="3.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.19" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\TMF20-DotNetSDK-v1.0.4\bin64\TMF20SDK.dll" Pack="false" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TMF20-DotNetSDK-v1.0.4\bin64\TMF20Driver.dll" Pack="false" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

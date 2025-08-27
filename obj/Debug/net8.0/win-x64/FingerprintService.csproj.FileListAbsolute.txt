@@ -1,0 +1,8 @@
+D:\Projects\hpms\BiometricService\FingerprintService\obj\Debug\net8.0\win-x64\FingerprintService.csproj.AssemblyReference.cache
+D:\Projects\hpms\BiometricService\FingerprintService\obj\Debug\net8.0\win-x64\FingerprintService.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\hpms\BiometricService\FingerprintService\obj\Debug\net8.0\win-x64\FingerprintService.AssemblyInfoInputs.cache
+D:\Projects\hpms\BiometricService\FingerprintService\obj\Debug\net8.0\win-x64\FingerprintService.AssemblyInfo.cs
+D:\Projects\hpms\BiometricService\FingerprintService\obj\Debug\net8.0\win-x64\FingerprintService.csproj.CoreCompileInputs.cache
+D:\Projects\hpms\BiometricService\FingerprintService\obj\Debug\net8.0\win-x64\FingerprintService.MvcApplicationPartsAssemblyInfo.cs
+D:\Projects\hpms\BiometricService\FingerprintService\obj\Debug\net8.0\win-x64\FingerprintService.MvcApplicationPartsAssemblyInfo.cache
+D:\Projects\hpms\BiometricService\FingerprintService\obj\Debug\net8.0\win-x64\FingerprintService.sourcelink.json
