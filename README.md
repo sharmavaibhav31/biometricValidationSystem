@@ -28,7 +28,7 @@
 
 ### Clone
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/sharmavaibhav31/biometricValidationSystem.git
 cd BiometricService
 ```
 
