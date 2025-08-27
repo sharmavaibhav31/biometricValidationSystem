@@ -4,22 +4,31 @@ using Google.Cloud.Firestore;
 using Microsoft.OpenApi.Models;
 using FingerprintService.Services;
 using FingerprintService.Storage;
+using FingerprintService.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuration
-var firebaseCredPath = builder.Configuration["Firebase:CredentialsPath"];
+var envFirebaseCred = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+var firebaseCredPath = string.IsNullOrWhiteSpace(envFirebaseCred)
+    ? builder.Configuration["Firebase:CredentialsPath"]
+    : envFirebaseCred;
 var firestoreProjectId = builder.Configuration["Firebase:ProjectId"];
 
 // Firebase initialization (idempotent)
 if (FirebaseApp.DefaultInstance == null)
 {
-    FirebaseApp.Create(new AppOptions
+    GoogleCredential credential;
+    if (!string.IsNullOrWhiteSpace(firebaseCredPath) && File.Exists(firebaseCredPath))
     {
-        Credential = string.IsNullOrWhiteSpace(firebaseCredPath)
-            ? GoogleCredential.GetApplicationDefault()
-            : GoogleCredential.FromFile(firebaseCredPath)
-    });
+        credential = GoogleCredential.FromFile(firebaseCredPath);
+    }
+    else
+    {
+        credential = GoogleCredential.GetApplicationDefault();
+    }
+
+    FirebaseApp.Create(new AppOptions { Credential = credential });
 }
 
 // Firestore
@@ -32,6 +41,7 @@ builder.Services.AddSingleton(provider => new FirestoreDbBuilder
 // Services
 builder.Services.AddSingleton<ITatvikFingerprintService, TatvikFingerprintService>();
 builder.Services.AddSingleton<IFingerprintRepository, FirebaseFingerprintRepository>();
+builder.Services.AddHttpClient<IPermissionApiClient, PermissionApiClient>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -44,6 +54,12 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+// Production hardening
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapControllers();

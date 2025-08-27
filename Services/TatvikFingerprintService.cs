@@ -1,5 +1,8 @@
 using System;
-using TMF20SDK; // Provided by TMF20SDK.dll
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace FingerprintService.Services
 {
@@ -11,45 +14,55 @@ namespace FingerprintService.Services
         bool MatchIsoTemplates(byte[] referenceTemplate, byte[] claimedTemplate);
     }
 
+    // Adapter client that calls local .NET Framework SDK bridge over HTTP
     public class TatvikFingerprintService : ITatvikFingerprintService
     {
-        private readonly TMF20FPLibrary _api;
+        private readonly HttpClient _httpClient;
+        private readonly string _baseUrl;
 
         public TatvikFingerprintService()
         {
-            _api = new TMF20FPLibrary();
+            _httpClient = new HttpClient();
+            _baseUrl = Environment.GetEnvironmentVariable("TMF20_BRIDGE_URL") ?? "http://127.0.0.1:5010";
         }
 
         public bool IsDeviceConnected()
         {
-            return _api.isDeviceConnected();
+            var resp = _httpClient.GetAsync($"{_baseUrl}/device/check").GetAwaiter().GetResult();
+            resp.EnsureSuccessStatusCode();
+            var json = resp.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
+            return json.GetProperty("connected").GetBoolean();
         }
 
         public object GetDeviceInfo()
         {
-            var info = new DeviceInfo();
-            var code = _api.getDeviceInfo(info);
-            if (code != 0)
-            {
-                throw new InvalidOperationException($"Tatvik device error code {code}");
-            }
-            return info;
+            var resp = _httpClient.GetAsync($"{_baseUrl}/device/info").GetAwaiter().GetResult();
+            resp.EnsureSuccessStatusCode();
+            var json = resp.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
+            return JsonSerializer.Deserialize<object>(json.GetRawText());
         }
 
         public byte[] CaptureTemplate(int timeoutMs)
         {
-            var result = new CaptureResult();
-            var code = _api.captureFingerprint(result, timeoutMs);
-            if (code != 0)
-            {
-                throw new InvalidOperationException($"Capture failed with code {code}: {result.errorString}");
-            }
-            return result.fmrBytes ?? result.TemplateData;
+            var resp = _httpClient.GetAsync($"{_baseUrl}/fingerprint/capture?timeoutMs={timeoutMs}").GetAwaiter().GetResult();
+            resp.EnsureSuccessStatusCode();
+            var json = resp.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
+            var base64 = json.GetProperty("template").GetString();
+            return Convert.FromBase64String(base64);
         }
 
         public bool MatchIsoTemplates(byte[] referenceTemplate, byte[] claimedTemplate)
         {
-            return _api.matchIsoTemplates(referenceTemplate, claimedTemplate);
+            var body = new
+            {
+                ReferenceTemplate = Convert.ToBase64String(referenceTemplate),
+                ClaimedTemplate = Convert.ToBase64String(claimedTemplate)
+            };
+            var resp = _httpClient.PostAsync($"{_baseUrl}/fingerprint/match",
+                new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")).GetAwaiter().GetResult();
+            resp.EnsureSuccessStatusCode();
+            var json = resp.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
+            return json.GetProperty("matched").GetBoolean();
         }
     }
 }

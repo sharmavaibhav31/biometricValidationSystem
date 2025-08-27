@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FingerprintService.Services;
 using FingerprintService.Storage;
 using FingerprintService.Models;
+using FingerprintService.Web;
 
 namespace FingerprintService.Controllers
 {
@@ -13,11 +14,13 @@ namespace FingerprintService.Controllers
     {
         private readonly ITatvikFingerprintService _fingerprintService;
         private readonly IFingerprintRepository _repository;
+        private readonly IPermissionApiClient _permissionApi;
 
-        public BiometricController(ITatvikFingerprintService fingerprintService, IFingerprintRepository repository)
+        public BiometricController(ITatvikFingerprintService fingerprintService, IFingerprintRepository repository, IPermissionApiClient permissionApi)
         {
             _fingerprintService = fingerprintService;
             _repository = repository;
+            _permissionApi = permissionApi;
         }
 
         [HttpGet("check-device")]
@@ -70,10 +73,20 @@ namespace FingerprintService.Controllers
                 var refTpl = Convert.FromBase64String(tplBase64);
                 if (_fingerprintService.MatchIsoTemplates(refTpl, claim))
                 {
-                    return Ok(new { matched = true });
+                    // Call permission API to check status and log
+                    var decision = await _permissionApi.CheckAndLogAsync(studentId, "auto");
+                    return Ok(new
+                    {
+                        matched = true,
+                        studentId,
+                        permissionStatus = decision.PermissionStatus,
+                        logged = decision.Logged,
+                        timestampUtc = decision.TimestampUtc,
+                        message = decision.Message
+                    });
                 }
             }
-            return Ok(new { matched = false });
+            return Ok(new { matched = false, studentId, permissionStatus = "Unknown", logged = false });
         }
     }
 }
