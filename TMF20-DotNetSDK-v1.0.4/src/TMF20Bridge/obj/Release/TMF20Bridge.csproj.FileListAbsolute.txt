@@ -1,0 +1,7 @@
+D:\Projects\hpms\BiometricService\TMF20-DotNetSDK-v1.0.4\src\TMF20Bridge\obj\Release\TMF20Bridge.csprojResolveAssemblyReference.cache
+D:\Projects\hpms\BiometricService\TMF20-DotNetSDK-v1.0.4\src\TMF20Bridge\bin\Release\TMF20Driver.dll
+D:\Projects\hpms\BiometricService\TMF20-DotNetSDK-v1.0.4\src\TMF20Bridge\bin\Release\TMF20Bridge.exe
+D:\Projects\hpms\BiometricService\TMF20-DotNetSDK-v1.0.4\src\TMF20Bridge\bin\Release\TMF20Bridge.pdb
+D:\Projects\hpms\BiometricService\TMF20-DotNetSDK-v1.0.4\src\TMF20Bridge\bin\Release\TMF20SDK.dll
+D:\Projects\hpms\BiometricService\TMF20-DotNetSDK-v1.0.4\src\TMF20Bridge\obj\Release\TMF20Bridge.exe
+D:\Projects\hpms\BiometricService\TMF20-DotNetSDK-v1.0.4\src\TMF20Bridge\obj\Release\TMF20Bridge.pdb

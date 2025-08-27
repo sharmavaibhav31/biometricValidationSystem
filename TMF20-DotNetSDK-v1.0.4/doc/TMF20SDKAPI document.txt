@@ -1,0 +1,40 @@
+/***********************************************************************
+  Function:	Is device connected
+  Parameter:	
+  Returns:	true	- if TMF20 device is connected,
+		false	- if TMF20 device in not connected.
+  Description: To check if TMF20 device is connected or not.
+************************************************************************/
+public Boolean isDeviceConnected()
+
+
+/***********************************************************************
+  Function: Device Info 
+  Parameter:	DeviceInfo object
+  Returns:    error code.
+  Description: To get the TMF20 device information.
+************************************************************************/
+public int getDeviceInfo(DeviceInfo devInfo)    
+
+
+/***********************************************************************
+  Function:	Fingerprint capture
+  Parameter:	captRslt        - in CaptureResult object
+  		timeoutMillis	- in Milliseconds
+  Returns:	error Code.
+  Description: To get the capture details.
+************************************************************************/
+public int captureFingerprint(CaptureResult captRslt, int timeInMills)    
+
+
+/***********************************************************************
+  Function:	compare Fingerprints 
+  Parameter:	referenceTemplateData	- Image data
+		claimedTemplateData	- Image data
+  Returns:	true	- if Fingerprint matched,
+		false	- if Fingerprint is not matched.
+  Description: To check if fingerprint template is matched or not
+************************************************************************/
+public Boolean matchIsoTemplates(byte[] referenceTemplateData, byte[] claimedTemplateData)
+       
+    
